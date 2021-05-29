@@ -5,6 +5,7 @@ import com.matkam.serwisogloszen.model.Category;
 import com.matkam.serwisogloszen.service.AnnouncementService;
 import com.matkam.serwisogloszen.service.CategoryService;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
@@ -39,11 +40,16 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
     }
 
     private void getLayoutAnnouncements() {
+        this.removeAll();
         List<Announcement> announcements = announcementService.findAllAnnouncements();
-        for(Announcement a : announcements){
-            Label l = new Label(a.getId().toString());
-            add(l);
-        }
+
+        Grid<Announcement> grid = new Grid<>();
+        grid.setItems(announcements);
+        grid.addColumn(Announcement::getId).setHeader("ID");
+        grid.addColumn(Announcement::getContent).setHeader("Name");
+        grid.addColumn(Announcement -> Announcement.getCategory().getName()).setHeader("Category");
+        add(grid);
+
         TextField content = new TextField("Content");
 
         Select<String> select = new Select<>();
@@ -79,4 +85,5 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
             getLayoutAnnouncements();
         }
     }
+
 }
