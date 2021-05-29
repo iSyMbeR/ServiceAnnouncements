@@ -3,7 +3,6 @@ package com.matkam.serwisogloszen.controller;
 import com.matkam.serwisogloszen.model.Category;
 import com.matkam.serwisogloszen.service.CategoryService;
 import lombok.RequiredArgsConstructor;
-import org.atmosphere.config.service.Get;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class CategoryController {
+public class CategoryControllerGenerator {
 
     private final CategoryService categoryService;
 
@@ -26,7 +25,7 @@ public class CategoryController {
             categoryService.saveCategory(Category.builder()
                     .name(s)
                     .build());
-            System.out.println("Dodano " +s);
+            System.out.println("Dodano " + s);
         });
         return "dodano";
     }
