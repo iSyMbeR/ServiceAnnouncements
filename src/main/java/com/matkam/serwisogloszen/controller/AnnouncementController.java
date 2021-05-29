@@ -1,8 +1,8 @@
 package com.matkam.serwisogloszen.controller;
 
-import com.matkam.serwisogloszen.model.AbstractModel;
 import com.matkam.serwisogloszen.model.Announcement;
 import com.matkam.serwisogloszen.model.Category;
+import com.matkam.serwisogloszen.model.UserApp;
 import com.matkam.serwisogloszen.service.AnnouncementService;
 import com.matkam.serwisogloszen.service.CategoryService;
 import com.vaadin.flow.component.UI;
@@ -18,10 +18,10 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.matkam.serwisogloszen.service.UserDetailsServiceImplementation.LOGGED_USER;
 
 @Route("announcements/:announcementId?")
 public class AnnouncementController extends VerticalLayout implements BeforeEnterObserver {
@@ -30,7 +30,8 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
     private Set<Announcement> selected;
     private final AnnouncementService announcementService;
     private final CategoryService categoryService;
-    AnnouncementController(AnnouncementService announcementService, CategoryService categoryService){
+
+    AnnouncementController(AnnouncementService announcementService, CategoryService categoryService) {
         this.announcementService = announcementService;
         this.categoryService = categoryService;
     }
@@ -42,7 +43,8 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
         if (this.id != null) getLayoutAnnouncement();
         else getLayoutAnnouncements();
 
-
+        UserApp loggedUser = LOGGED_USER;
+        add(new Label(loggedUser.getUsername()));
     }
 
     private void getLayoutAnnouncements() {
@@ -64,7 +66,7 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
         List<Category> categories = categoryService.findAllCategories();
         select.setItems(categories.stream().map(Category::getName));
 
-        add (new VerticalLayout(
+        add(new VerticalLayout(
                 new H2("Add announcement"),
                 content,
                 select,
@@ -80,16 +82,18 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
         Label label = new Label(announcementService.findAnnouncementById(this.id).toString());
         add(label);
     }
+
     private void addAnnouncement(String content, String category) {
         if (content.trim().isEmpty()) {
             Notification.show("Enter a announcement message");
-        }else if (category.isEmpty()) {
+        } else if (category.isEmpty()) {
             Notification.show("Enter a category");
         } else {
             Category c = categoryService.findByName(category);
             announcementService.saveAnnouncement(new Announcement(content, c));
             Notification.show("Added announcement!");
             getLayoutAnnouncements();
+
         }
     }
 }
