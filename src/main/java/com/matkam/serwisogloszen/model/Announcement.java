@@ -15,4 +15,6 @@ public class Announcement extends AbstractModel {
     private String content;
     @OneToOne
     private Category category;
+    @OneToOne
+    private UserApp user;
 }
