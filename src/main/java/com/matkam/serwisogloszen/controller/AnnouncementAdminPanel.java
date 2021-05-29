@@ -1,19 +1,13 @@
 package com.matkam.serwisogloszen.controller;
 
-import com.matkam.serwisogloszen.model.AbstractModel;
 import com.matkam.serwisogloszen.model.Announcement;
-import com.matkam.serwisogloszen.model.Category;
 import com.matkam.serwisogloszen.service.AnnouncementService;
 import com.matkam.serwisogloszen.service.CategoryService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
@@ -23,14 +17,15 @@ import java.util.List;
 import java.util.Set;
 
 
-@Route("announcements/:announcementId?")
-public class AnnouncementController extends VerticalLayout implements BeforeEnterObserver {
+@Route("announcements-admin/:announcementId?")
+public class AnnouncementAdminPanel extends VerticalLayout implements BeforeEnterObserver {
 
     public Long id;
     private Set<Announcement> selected;
     private final AnnouncementService announcementService;
     private final CategoryService categoryService;
-    AnnouncementController(AnnouncementService announcementService, CategoryService categoryService){
+
+    AnnouncementAdminPanel(AnnouncementService announcementService, CategoryService categoryService) {
         this.announcementService = announcementService;
         this.categoryService = categoryService;
     }
@@ -54,25 +49,16 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
         grid.addColumn(Announcement::getId).setHeader("ID");
         grid.addColumn(Announcement::getContent).setHeader("Name");
         grid.addColumn(Announcement -> Announcement.getCategory().getName()).setHeader("Category");
+        grid.setSelectionMode(Grid.SelectionMode.MULTI);
+
+        grid.addSelectionListener(event -> {
+            this.selected = event.getAllSelectedItems();
+        });
         grid.addItemClickListener(event ->
-                UI.getCurrent().getPage().setLocation("http://localhost:8081/announcements/" + event.getItem().getId()));
+                UI.getCurrent().getPage().setLocation("http://localhost:8081/announcements-admin/" + event.getItem().getId()));
         add(grid);
-        TextField content = new TextField("Content");
 
-        Select<String> select = new Select<>();
-        select.setLabel("Category");
-        List<Category> categories = categoryService.findAllCategories();
-        select.setItems(categories.stream().map(Category::getName));
-
-        add (new VerticalLayout(
-                new H2("Add announcement"),
-                content,
-                select,
-                new Button("Send", event -> addAnnouncement(
-                        content.getValue(),
-                        select.getValue()
-                )))
-        );
+        add(new Button("Usuń", event -> removeSelectedAnnouncements()));
 
     }
 
@@ -80,16 +66,14 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
         Label label = new Label(announcementService.findAnnouncementById(this.id).toString());
         add(label);
     }
-    private void addAnnouncement(String content, String category) {
-        if (content.trim().isEmpty()) {
-            Notification.show("Enter a announcement message");
-        }else if (category.isEmpty()) {
-            Notification.show("Enter a category");
-        } else {
-            Category c = categoryService.findByName(category);
-            announcementService.saveAnnouncement(new Announcement(content, c));
-            Notification.show("Added announcement!");
-            getLayoutAnnouncements();
+
+    private void removeSelectedAnnouncements() {
+        if (this.selected.size() == 0) return;
+        for (Announcement a : this.selected) {
+            announcementService.deleteAnnouncement(a);
         }
+        this.selected = new HashSet<Announcement>();
+        getLayoutAnnouncements();
     }
+
 }
