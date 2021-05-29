@@ -19,6 +19,7 @@ public class UserApp extends AbstractModel implements UserDetails {
     private String username;
     private String password;
     private String role;
+
     @OneToMany
     private List<Announcement> announcementList;
 
