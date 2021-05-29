@@ -7,16 +7,26 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserApp extends AbstractModel implements UserDetails {
     private String username;
     private String password;
     private String role;
+    @OneToMany
+    private List<Announcement> announcementList;
+
+    public UserApp(String username, String password, String role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
