@@ -1,12 +1,16 @@
 package com.matkam.serwisogloszen.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
 @Entity
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
 public class Announcement extends AbstractModel {
     private String content;
     @OneToOne
