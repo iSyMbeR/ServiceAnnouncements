@@ -1,7 +1,7 @@
 package com.matkam.serwisogloszen.service;
 
 import com.matkam.serwisogloszen.exceptions.UserNotFountException;
-import com.matkam.serwisogloszen.model.UserApp;
+import com.matkam.serwisogloszen.model.user.UserApp;
 import com.matkam.serwisogloszen.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,9 +21,12 @@ public class UserAppService {
         return userRepo.findById(id)
                 .orElseThrow(() -> new UserNotFountException("User with id " + id + " was not found"));
     }
-
-    public UserApp saveUser(UserApp user) {
-        return userRepo.save(user);
+    public UserApp findUserByUsername(String name) {
+        return userRepo.findUserByUsername(name)
+                .orElseThrow(() -> new UserNotFountException("User with name " + name + " was not found"));
+    }
+    public void saveUser(UserApp user) {
+        userRepo.save(user);
     }
 
     public void deleteUser(UserApp user) {

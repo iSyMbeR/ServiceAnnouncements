@@ -1,6 +1,6 @@
 package com.matkam.serwisogloszen.service;
 
-import com.matkam.serwisogloszen.model.UserApp;
+import com.matkam.serwisogloszen.model.user.UserApp;
 import com.matkam.serwisogloszen.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,9 +14,11 @@ public class UserDetailsServiceImplementation implements UserDetailsService {
 
     private final UserRepo userRepo;
     public static UserApp LOGGED_USER;
+
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        LOGGED_USER = userRepo.findUserByUsername(s);
+        if (userRepo.findUserByUsername(s).isPresent())
+            LOGGED_USER = userRepo.findUserByUsername(s).get();
         return LOGGED_USER;
     }
 }

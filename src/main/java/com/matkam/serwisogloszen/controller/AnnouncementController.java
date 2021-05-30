@@ -1,8 +1,8 @@
 package com.matkam.serwisogloszen.controller;
 
-import com.matkam.serwisogloszen.model.Announcement;
 import com.matkam.serwisogloszen.model.Category;
-import com.matkam.serwisogloszen.model.Enum.AnnouncementStatus;
+import com.matkam.serwisogloszen.model.announcement.Announcement;
+import com.matkam.serwisogloszen.model.announcement.AnnouncementStatus;
 import com.matkam.serwisogloszen.service.AnnouncementService;
 import com.matkam.serwisogloszen.service.CategoryService;
 import com.vaadin.flow.component.UI;
@@ -12,11 +12,9 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextArea;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
@@ -49,13 +47,13 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
 
     private void getLayoutAnnouncements() {
         this.removeAll();
-        Label userName = new Label("Witaj "+LOGGED_USER.getUsername());
+        Label userName = new Label("Witaj " + LOGGED_USER.getUsername());
         add(userName);
         List<Announcement> announcements = announcementService.findByStatus(AnnouncementStatus.active);
 
         Grid<Announcement> grid = new Grid<>();
         grid.setItems(announcements);
-        grid.addColumn(Announcement::getId).setHeader("ID");
+        grid.addColumn(Announcement -> Announcement.getUser().getUsername()).setHeader("Added by");
         grid.addColumn(Announcement::getContent).setHeader("Name");
         grid.addColumn(Announcement -> Announcement.getCategory().getName()).setHeader("Category");
         grid.addItemClickListener(event ->
@@ -78,13 +76,11 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
                         content.getValue(),
                         select.getValue()
                 )));
-        vl.setWidth(300,Unit.PIXELS);
+        vl.setWidth(300, Unit.PIXELS);
         vl.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         vl.setHorizontalComponentAlignment(Alignment.CENTER);
         vl.setAlignSelf(Alignment.CENTER);
         add(vl);
-
-
 
 
     }
@@ -127,11 +123,12 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
 
         }
     }
+
     private void saveAnnouncement(String content, Category category, Announcement announcement) {
-        System.out.println(content +" "+category);
+        System.out.println(content + " " + category);
         if (content.trim().isEmpty()) {
             Notification.show("Enter a announcement message");
-        } else if (category==null) {
+        } else if (category == null) {
             Notification.show("Enter a category");
         } else {
             announcement.setCategory(category);

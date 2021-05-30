@@ -1,6 +1,7 @@
 package com.matkam.serwisogloszen.security;
 
-import com.matkam.serwisogloszen.model.UserApp;
+import com.matkam.serwisogloszen.model.user.UserApp;
+import com.matkam.serwisogloszen.model.user.UserRole;
 import com.matkam.serwisogloszen.repository.UserRepo;
 import com.matkam.serwisogloszen.service.UserDetailsServiceImplementation;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +28,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/announcements-admin").hasAnyAuthority("ADMIN","MODERATOR")
-                .antMatchers("/announcements-admin/*").hasAnyAuthority("ADMIN","MODERATOR")
-                .antMatchers("/announcements").hasAnyAuthority("ADMIN","MODERATOR","USER")
-                .antMatchers("/announcements/*").hasAnyAuthority("ADMIN","MODERATOR","USER")
+                .antMatchers("/announcements-admin").hasAnyAuthority(UserRole.ADMIN.name(), UserRole.MODERATOR.name())
+                .antMatchers("/announcements-admin/*").hasAnyAuthority(UserRole.ADMIN.name(), UserRole.MODERATOR.name())
+                .antMatchers("/announcements").hasAnyAuthority(UserRole.ADMIN.name(), UserRole.MODERATOR.name(), UserRole.USER.name())
+                .antMatchers("/announcements/*").hasAnyAuthority(UserRole.ADMIN.name(), UserRole.MODERATOR.name(), UserRole.USER.name())
                 .antMatchers("/register").permitAll()
                 .antMatchers("/login").permitAll()
                 .and()
@@ -41,9 +42,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @EventListener(ApplicationReadyEvent.class)
     public void get() {
-        UserApp appUserUser = new UserApp("ja", passwordEncoderConfig.passwordEncoder().encode("ja"), "USER");
-        UserApp appUserAdmin = new UserApp("ty", passwordEncoderConfig.passwordEncoder().encode("ty"), "ADMIN");
-        if (userRepo.findUserByUsername(appUserUser.getUsername()) == null && userRepo.findUserByUsername(appUserAdmin.getUsername()) == null) {
+        UserApp appUserUser = new UserApp("ja", passwordEncoderConfig.passwordEncoder().encode("ja"), UserRole.USER);
+        UserApp appUserAdmin = new UserApp("ty", passwordEncoderConfig.passwordEncoder().encode("ty"), UserRole.ADMIN);
+        UserApp appUserModerator = new UserApp("ona", passwordEncoderConfig.passwordEncoder().encode("ona"), UserRole.MODERATOR);
+        if (userRepo.findUserByUsername(appUserUser.getUsername()).isEmpty() && userRepo.findUserByUsername(appUserAdmin.getUsername()).isEmpty()) {
             userRepo.save(appUserUser);
             userRepo.save(appUserAdmin);
         }

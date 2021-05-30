@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 @Getter
 @Setter
 @Builder
+@ToString
 public class Category extends AbstractModel {
     private String name;
 }

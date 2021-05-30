@@ -1,37 +1,55 @@
-package com.matkam.serwisogloszen.model;
+package com.matkam.serwisogloszen.model.user;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import com.matkam.serwisogloszen.model.AbstractModel;
+import com.matkam.serwisogloszen.model.announcement.Announcement;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
+@ToString
 public class UserApp extends AbstractModel implements UserDetails {
     private String username;
     private String password;
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Announcement> announcementList;
 
-    public UserApp(String username, String password, String role) {
+    public UserApp(String username, String password, UserRole role) {
         this.username = username;
         this.password = password;
         this.role = role;
     }
 
+    public void addAnnouncement(Announcement announcement) {
+        if (announcementList == null)
+            announcementList = new ArrayList<>();
+
+        announcementList.add(announcement);
+    }
+
+    public void deleteAnnouncement(Announcement announcement) {
+        if (announcementList != null)
+            announcementList.remove(announcement);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(role));
+        return Collections.singleton(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override

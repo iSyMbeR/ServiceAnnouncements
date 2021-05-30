@@ -1,8 +1,8 @@
 package com.matkam.serwisogloszen.service;
 
 import com.matkam.serwisogloszen.exceptions.AnnouncementNotFountException;
-import com.matkam.serwisogloszen.model.Announcement;
-import com.matkam.serwisogloszen.model.Enum.AnnouncementStatus;
+import com.matkam.serwisogloszen.model.announcement.Announcement;
+import com.matkam.serwisogloszen.model.announcement.AnnouncementStatus;
 import com.matkam.serwisogloszen.repository.AnnouncementRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,8 +23,8 @@ public class AnnouncementService {
                 .orElseThrow(() -> new AnnouncementNotFountException("Announcement with id " + id + " was not found"));
     }
 
-    public Announcement saveAnnouncement(Announcement announcement) {
-        return announcementRepo.save(announcement);
+    public void saveAnnouncement(Announcement announcement) {
+        announcementRepo.save(announcement);
     }
 
     public void deleteAnnouncement(Announcement announcement) {
