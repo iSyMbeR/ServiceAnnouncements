@@ -2,6 +2,7 @@ package com.matkam.serwisogloszen.service;
 
 import com.matkam.serwisogloszen.exceptions.AnnouncementNotFountException;
 import com.matkam.serwisogloszen.model.Announcement;
+import com.matkam.serwisogloszen.model.Enum.AnnouncementStatus;
 import com.matkam.serwisogloszen.repository.AnnouncementRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,4 +34,8 @@ public class AnnouncementService {
     public void deleteAnnouncementById(Long id) {
         announcementRepo.deleteById(id);
     }
+
+    public List<Announcement> findByStatus(AnnouncementStatus status){
+        return announcementRepo.findByStatusEquals(status);
+    };
 }

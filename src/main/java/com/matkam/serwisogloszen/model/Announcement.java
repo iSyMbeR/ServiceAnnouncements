@@ -1,5 +1,6 @@
 package com.matkam.serwisogloszen.model;
 
+import com.matkam.serwisogloszen.model.Enum.AnnouncementStatus;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -17,4 +18,5 @@ public class Announcement extends AbstractModel {
     private Category category;
     @OneToOne
     private UserApp user;
+    private AnnouncementStatus status;
 }

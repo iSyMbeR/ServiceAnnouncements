@@ -2,6 +2,7 @@ package com.matkam.serwisogloszen.controller;
 
 import com.matkam.serwisogloszen.model.Announcement;
 import com.matkam.serwisogloszen.model.Category;
+import com.matkam.serwisogloszen.model.Enum.AnnouncementStatus;
 import com.matkam.serwisogloszen.service.AnnouncementService;
 import com.matkam.serwisogloszen.service.CategoryService;
 import com.vaadin.flow.component.UI;
@@ -33,7 +34,6 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
     private final AnnouncementService announcementService;
     private final CategoryService categoryService;
 
-
     AnnouncementController(AnnouncementService announcementService, CategoryService categoryService) {
         this.announcementService = announcementService;
         this.categoryService = categoryService;
@@ -51,7 +51,7 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
         this.removeAll();
         Label userName = new Label("Witaj "+LOGGED_USER.getUsername());
         add(userName);
-        List<Announcement> announcements = announcementService.findAllAnnouncements();
+        List<Announcement> announcements = announcementService.findByStatus(AnnouncementStatus.active);
 
         Grid<Announcement> grid = new Grid<>();
         grid.setItems(announcements);
@@ -61,6 +61,7 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
         grid.addItemClickListener(event ->
                 UI.getCurrent().getPage().setLocation("http://localhost:8081/announcements/" + event.getItem().getId()));
         add(grid);
+
         TextArea content = new TextArea("Content");
 
         Select<String> select = new Select<>();
@@ -89,8 +90,28 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
     }
 
     public void getLayoutAnnouncement() {
-        Label label = new Label(announcementService.findAnnouncementById(this.id).toString());
-        add(label);
+        Announcement announcement = announcementService.findAnnouncementById(this.id);
+
+        TextArea content = new TextArea("Content");
+        content.setValue(announcement.getContent());
+
+        Select<Category> categorySelect = new Select<>();
+        categorySelect.setLabel("Category");
+        categorySelect.setItems(categoryService.findAllCategories());
+        categorySelect.setItemLabelGenerator(Category::getName);
+        categorySelect.setValue(announcement.getCategory());
+
+        VerticalLayout vl = new VerticalLayout(
+                new H2("Edit announcement"),
+                content,
+                categorySelect,
+                new Button("Save", event -> saveAnnouncement(
+                        content.getValue(),
+                        categorySelect.getValue(),
+                        announcement
+                )));
+
+        add(vl);
     }
 
     private void addAnnouncement(String content, String category) {
@@ -100,10 +121,24 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
             Notification.show("Enter a category");
         } else {
             Category c = categoryService.findByName(category);
-            announcementService.saveAnnouncement(new Announcement(content, c, LOGGED_USER));
+            announcementService.saveAnnouncement(new Announcement(content, c, LOGGED_USER, AnnouncementStatus.review));
             Notification.show("Added announcement!");
             getLayoutAnnouncements();
 
+        }
+    }
+    private void saveAnnouncement(String content, Category category, Announcement announcement) {
+        System.out.println(content +" "+category);
+        if (content.trim().isEmpty()) {
+            Notification.show("Enter a announcement message");
+        } else if (category==null) {
+            Notification.show("Enter a category");
+        } else {
+            announcement.setCategory(category);
+            announcement.setContent(content);
+            announcementService.saveAnnouncement(announcement);
+            Notification.show("Saved announcement!");
+            UI.getCurrent().getPage().setLocation("http://localhost:8081/announcements/");
         }
     }
 }
