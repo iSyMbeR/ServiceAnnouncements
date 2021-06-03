@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,16 +21,18 @@ import java.util.List;
 @Setter
 @Builder
 @ToString
-public class UserApp extends AbstractModel implements UserDetails {
+public class User extends AbstractModel implements UserDetails {
     private String username;
     private String password;
     @Enumerated(EnumType.STRING)
     private UserRole role;
+    @Email
+    private String email;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Announcement> announcementList;
 
-    public UserApp(String username, String password, UserRole role) {
+    public User(String username, String password, UserRole role) {
         this.username = username;
         this.password = password;
         this.role = role;

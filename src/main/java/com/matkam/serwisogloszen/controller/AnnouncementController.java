@@ -5,6 +5,7 @@ import com.matkam.serwisogloszen.model.announcement.Announcement;
 import com.matkam.serwisogloszen.model.announcement.AnnouncementStatus;
 import com.matkam.serwisogloszen.service.AnnouncementService;
 import com.matkam.serwisogloszen.service.CategoryService;
+import com.matkam.serwisogloszen.service.SendMailService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
@@ -31,10 +32,12 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
     private Set<Announcement> selected;
     private final AnnouncementService announcementService;
     private final CategoryService categoryService;
+    private final SendMailService sendMailService;
 
-    AnnouncementController(AnnouncementService announcementService, CategoryService categoryService) {
+    AnnouncementController(AnnouncementService announcementService, CategoryService categoryService, SendMailService sendMailService) {
         this.announcementService = announcementService;
         this.categoryService = categoryService;
+        this.sendMailService = sendMailService;
     }
 
     @Override
@@ -119,6 +122,7 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
             Category c = categoryService.findByName(category);
             announcementService.saveAnnouncement(new Announcement(content, c, LOGGED_USER, AnnouncementStatus.review));
             Notification.show("Added announcement!");
+            sendAddAnnouncementInformation();
             getLayoutAnnouncements();
 
         }
@@ -137,5 +141,10 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
             Notification.show("Saved announcement!");
             UI.getCurrent().getPage().setLocation("http://localhost:8081/announcements/");
         }
+    }
+
+    private void sendAddAnnouncementInformation(){
+        String message = "Your advertisement has been sent to the administrator and is waiting for confirmation.";
+        sendMailService.sendMail(LOGGED_USER.getEmail(), message,"Announcement!");
     }
 }

@@ -2,7 +2,7 @@ package com.matkam.serwisogloszen.model.announcement;
 
 import com.matkam.serwisogloszen.model.AbstractModel;
 import com.matkam.serwisogloszen.model.Category;
-import com.matkam.serwisogloszen.model.user.UserApp;
+import com.matkam.serwisogloszen.model.user.User;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -20,6 +20,6 @@ public class Announcement extends AbstractModel {
     @OneToOne
     private Category category;
     @OneToOne
-    private UserApp user;
+    private User user;
     private AnnouncementStatus status;
 }

@@ -1,6 +1,6 @@
 package com.matkam.serwisogloszen.controller;
 
-import com.matkam.serwisogloszen.model.user.UserApp;
+import com.matkam.serwisogloszen.model.user.User;
 import com.matkam.serwisogloszen.model.user.UserRole;
 import com.matkam.serwisogloszen.security.PasswordEncoderConfig;
 import com.matkam.serwisogloszen.service.UserAppService;
@@ -50,7 +50,7 @@ class RegisterView extends Composite {
         } else if (!password1.equals(password2)) {
             Notification.show("Passwords don't match");
         } else {
-            userAppService.saveUser(new UserApp(username, passwordEncoderConfig.passwordEncoder().encode(password1), UserRole.USER));
+            userAppService.saveUser(new User(username, passwordEncoderConfig.passwordEncoder().encode(password1), UserRole.USER));
             Notification.show("Check your email.");
         }
     }

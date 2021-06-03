@@ -2,7 +2,7 @@ package com.matkam.serwisogloszen.service;
 
 import com.matkam.serwisogloszen.model.announcement.Announcement;
 import com.matkam.serwisogloszen.model.Category;
-import com.matkam.serwisogloszen.model.user.UserApp;
+import com.matkam.serwisogloszen.model.user.User;
 import com.matkam.serwisogloszen.model.user.UserRole;
 import lombok.RequiredArgsConstructor;
 import net.bytebuddy.utility.RandomString;
@@ -40,7 +40,7 @@ class AnnouncementServiceTest {
                     .name(s)
                     .build());
         });
-        UserApp userApp = UserApp.builder()
+        User userApp = User.builder()
                 .role(UserRole.USER)
                 .username("Mieczyslaw")
                 .password("karwasztwarz")
@@ -76,7 +76,7 @@ class AnnouncementServiceTest {
     @Test
     void shouldDeleteLastAnnouncementFromDatabase(){
         List<Announcement> announcements = announcementService.findAllAnnouncements();
-        UserApp user = userService.findUserById(1L);
+        User user = userService.findUserById(1L);
         Announcement ann = announcements.get(announcements.size() - 1);
         user.deleteAnnouncement(ann);
         userService.saveUser(user);

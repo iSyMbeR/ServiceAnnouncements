@@ -21,12 +21,14 @@ public class CategoryControllerGenerator {
                 "Prime Video", "Video Games", "Toys & Games", "Tools & Home Improvement", "Sports & Outdoors", "Software", "Pet Supplies", "Music, CDs & Vinyl", "Movies & TV", "Luggage", "Industrial & Scientific",
                 "Home & Kitchen", "Health & Household", "Deals", "Boys' Fashion", "Girls' Fashion", "Men's Fashion", "Women's Fashion");
 
-        categoryNames.forEach(s -> {
-            categoryService.saveCategory(Category.builder()
-                    .name(s)
-                    .build());
-            System.out.println("Dodano " + s);
-        });
-        return "dodano";
+        if(categoryService.findAllCategories().size() < categoryNames.size()){
+            categoryNames.forEach(s -> {
+                categoryService.saveCategory(Category.builder()
+                        .name(s)
+                        .build());
+            });
+            return "Added";
+        }
+        return "This was added earlier.";
     }
 }

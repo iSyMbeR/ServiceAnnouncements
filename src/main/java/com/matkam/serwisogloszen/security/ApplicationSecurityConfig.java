@@ -1,6 +1,6 @@
 package com.matkam.serwisogloszen.security;
 
-import com.matkam.serwisogloszen.model.user.UserApp;
+import com.matkam.serwisogloszen.model.user.User;
 import com.matkam.serwisogloszen.model.user.UserRole;
 import com.matkam.serwisogloszen.repository.UserRepo;
 import com.matkam.serwisogloszen.service.UserDetailsServiceImplementation;
@@ -42,12 +42,18 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @EventListener(ApplicationReadyEvent.class)
     public void get() {
-        UserApp appUserUser = new UserApp("ja", passwordEncoderConfig.passwordEncoder().encode("ja"), UserRole.USER);
-        UserApp appUserAdmin = new UserApp("ty", passwordEncoderConfig.passwordEncoder().encode("ty"), UserRole.ADMIN);
-        UserApp appUserModerator = new UserApp("ona", passwordEncoderConfig.passwordEncoder().encode("ona"), UserRole.MODERATOR);
-        if (userRepo.findUserByUsername(appUserUser.getUsername()).isEmpty() && userRepo.findUserByUsername(appUserAdmin.getUsername()).isEmpty()) {
-            userRepo.save(appUserUser);
-            userRepo.save(appUserAdmin);
+        User user = User.builder()
+                .username("ja")
+                .email("kamil.lobas@gmail.com")
+                .password(passwordEncoderConfig.passwordEncoder().encode("ja"))
+                .role(UserRole.USER)
+                .build();
+        User admin = new User("ty", passwordEncoderConfig.passwordEncoder().encode("ty"), UserRole.ADMIN);
+        User moderator = new User("ona", passwordEncoderConfig.passwordEncoder().encode("ona"), UserRole.MODERATOR);
+        if (userRepo.findUserByUsername(user.getUsername()).isEmpty() && userRepo.findUserByUsername(admin.getUsername()).isEmpty()) {
+            userRepo.save(user);
+            userRepo.save(admin);
+            userRepo.save(moderator);
         }
     }
 

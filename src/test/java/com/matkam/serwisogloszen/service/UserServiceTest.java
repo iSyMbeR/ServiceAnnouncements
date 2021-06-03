@@ -1,6 +1,6 @@
 package com.matkam.serwisogloszen.service;
 
-import com.matkam.serwisogloszen.model.user.UserApp;
+import com.matkam.serwisogloszen.model.user.User;
 import com.matkam.serwisogloszen.model.user.UserRole;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,22 +11,22 @@ import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class UserAppServiceTest {
+class UserServiceTest {
 
     @Autowired
     private UserAppService userAppService;
 
     @BeforeEach
     void fillDataBase() {
-        userAppService.saveUser(UserApp.builder()
+        userAppService.saveUser(User.builder()
                 .username("Zbyszek")
                 .password("Stonoga")
                 .role(UserRole.USER).build());
-        userAppService.saveUser(UserApp.builder()
+        userAppService.saveUser(User.builder()
                 .username("Smieszek")
                 .password("Cieto")
                 .role(UserRole.USER).build());
-        userAppService.saveUser(UserApp.builder()
+        userAppService.saveUser(User.builder()
                 .username("Tata")
                 .password("uranskiego")
                 .role(UserRole.USER).build());
@@ -49,7 +49,7 @@ class UserAppServiceTest {
 
     @Test
     void shouldSaveUser() {
-        userAppService.saveUser(UserApp.builder().build());
+        userAppService.saveUser(User.builder().build());
         Assertions.assertEquals(4, userAppService.findAllUsers().size());
     }
 
