@@ -20,15 +20,20 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Set;
 
 import static com.matkam.serwisogloszen.service.UserDetailsServiceImplementation.LOGGED_USER;
 
+@Slf4j
 @Route("announcements/:announcementId?")
 public class AnnouncementController extends VerticalLayout implements BeforeEnterObserver {
-
+    private static final String HOST = "localhost";
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnnouncementController.class);
     public Long id;
     private Set<Announcement> selected;
     private final AnnouncementService announcementService;
@@ -52,6 +57,7 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
     }
 
     private void getLayoutAnnouncements() {
+        LOGGER.info(LOGGED_USER.getUsername() + " Connected to " + HOST + "/announcements");
         this.removeAll();
         Label userName = new Label("Witaj " + LOGGED_USER.getUsername());
         add(userName);
@@ -112,11 +118,11 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
                         categorySelect.getValue(),
                         announcement
                 )));
-
         add(vl);
     }
 
     private void addAnnouncement(String content, String category) {
+        LOGGER.info(LOGGED_USER.getUsername() + " adding announcement");
         if (content.trim().isEmpty()) {
             Notification.show("Enter a announcement message");
         } else if (category.isEmpty()) {
@@ -128,13 +134,13 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
             userAppService.saveUser(LOGGED_USER);
             Notification.show("Added announcement!");
             sendAddAnnouncementInformation();
+            LOGGER.info("Announcement sent");
             getLayoutAnnouncements();
-
         }
     }
 
     private void saveAnnouncement(String content, Category category, Announcement announcement) {
-        System.out.println(content + " " + category);
+        LOGGER.info("Saving AnnouncementInformation with id " + announcement.getId());
         if (content.trim().isEmpty()) {
             Notification.show("Enter a announcement message");
         } else if (category == null) {
@@ -144,12 +150,15 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
             announcement.setContent(content);
             announcementService.saveAnnouncement(announcement);
             Notification.show("Saved announcement!");
+            LOGGER.info("AnnouncementInformation saved");
             UI.getCurrent().getPage().setLocation("http://localhost:8081/announcements/");
         }
     }
 
-    private void sendAddAnnouncementInformation(){
+    private void sendAddAnnouncementInformation() {
+        LOGGER.info("Sending AddAnnouncementInformation to user " + LOGGED_USER.getUsername());
         String message = "Your advertisement has been sent to the administrator and is waiting for confirmation.";
-        sendMailService.sendMail(LOGGED_USER.getEmail(), message,"Announcement!");
+        sendMailService.sendMail(LOGGED_USER.getEmail(), message, "Announcement!");
+        LOGGER.info("AddAnnouncementInformation sent");
     }
 }

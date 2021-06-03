@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class HomeController {
     private final UserAppService userAppService;
-    //Logger logger = LoggerFactory.getLogger(HomeController.class);
 
     @GetMapping("/home")
     public String getUserById() {

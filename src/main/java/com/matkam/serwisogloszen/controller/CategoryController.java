@@ -18,13 +18,19 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.matkam.serwisogloszen.service.UserDetailsServiceImplementation.LOGGED_USER;
+
 @Route("category/:categoryId?")
 public class CategoryController extends VerticalLayout implements BeforeEnterObserver {
+    private static final String HOST = "localhost";
+    private static final Logger LOGGER = LoggerFactory.getLogger(CategoryController.class);
     private final CategoryService categoryService;
     private Long id;
     private Set<Category> selected;
@@ -43,6 +49,7 @@ public class CategoryController extends VerticalLayout implements BeforeEnterObs
     }
 
     public void getLayoutCategory() {
+        LOGGER.info(LOGGED_USER.getUsername() + " Connected to " + HOST + "/category");
         this.removeAll();
         Category category = categoryService.findCategoriesById(this.id);
 
@@ -61,12 +68,14 @@ public class CategoryController extends VerticalLayout implements BeforeEnterObs
     }
 
     private void saveCategory(String name, Category category) {
+        LOGGER.info("Saving category");
         if (name.trim().isEmpty()) {
             Notification.show("Enter a announcement message");
         } else {
             category.setName(name);
             categoryService.saveCategory(category);
             Notification.show("Saved category!");
+            LOGGER.info("Category saved");
             UI.getCurrent().getPage().setLocation("http://localhost:8081/category/");
         }
 
@@ -100,22 +109,25 @@ public class CategoryController extends VerticalLayout implements BeforeEnterObs
     }
 
     private void removeSelectedCategories() {
+        LOGGER.info("Removing selected category");
         if (this.selected.size() == 0) return;
         for (Category c : this.selected) {
             categoryService.deleteCategory(c);
+            LOGGER.info("Category " + c.getName() + " deleted");
         }
         this.selected = new HashSet<>();
         getLayoutCategories();
     }
 
     private void addCategory(String name) {
+        LOGGER.info("Adding new category'" + name + "'");
         if (name.trim().isEmpty()) {
             Notification.show("Enter a announcement message");
         } else {
             this.categoryService.saveCategory(new Category(name));
             Notification.show("Added category!");
+            LOGGER.info(name + " category added");
         }
         getLayoutCategories();
-
     }
 }

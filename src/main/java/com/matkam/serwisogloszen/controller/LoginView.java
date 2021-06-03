@@ -14,12 +14,17 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Route("register")
 class RegisterView extends Composite {
+    private static final String HOST = "localhost";
+    private static final Logger LOGGER = LoggerFactory.getLogger(RegisterView.class);
+
     private final PasswordEncoderConfig passwordEncoderConfig;
     private final UserAppService userAppService;
     private final SendMailService sendMailService;
@@ -32,6 +37,7 @@ class RegisterView extends Composite {
 
     @Override
     protected Component initContent() {
+        LOGGER.info("New user connected to " + HOST + "/register");
         TextField username = new TextField("Username");
         TextField email = new TextField("Email");
         PasswordField password1 = new PasswordField("Password");
@@ -52,6 +58,7 @@ class RegisterView extends Composite {
     }
 
     private void register(String username, String email, String password1, String password2) {
+        LOGGER.info("Trying to register new account...");
         List<User> userList = userAppService.findAllUsers();
         List<String> userNameList = userList.stream()
                 .map(User::getUsername)
@@ -88,6 +95,7 @@ class RegisterView extends Composite {
 
             sendMailService.sendMail(email, message, "ServiceAnnouncements Account");
             Notification.show("Check your email.");
+            LOGGER.info("User with username " + username + " has been added");
         }
     }
 }
