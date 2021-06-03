@@ -15,7 +15,7 @@ public class MainGui extends VerticalLayout {
         Button button = new Button("Kliknij");
         button.addClickListener(buttonClickEvent -> {
             label.setText(userAppService.findUserById(1L).getUsername());
-            sendMailService.sendMail("kamil.lobas@gmail.com","nic sie nie stalo ziom", "Tescik");
+            sendMailService.sendMail("andrzejduda@gmail.com","Nie pytaj mnie o imie walczac z ostrym cieniem mgly", "Tescik");
         });
         setHorizontalComponentAlignment(Alignment.CENTER, label);
         add(label, button);

@@ -6,6 +6,7 @@ import com.matkam.serwisogloszen.model.announcement.AnnouncementStatus;
 import com.matkam.serwisogloszen.service.AnnouncementService;
 import com.matkam.serwisogloszen.service.CategoryService;
 import com.matkam.serwisogloszen.service.SendMailService;
+import com.matkam.serwisogloszen.service.UserAppService;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
@@ -32,11 +33,13 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
     private Set<Announcement> selected;
     private final AnnouncementService announcementService;
     private final CategoryService categoryService;
+    private final UserAppService userAppService;
     private final SendMailService sendMailService;
 
-    AnnouncementController(AnnouncementService announcementService, CategoryService categoryService, SendMailService sendMailService) {
+    AnnouncementController(AnnouncementService announcementService, CategoryService categoryService, UserAppService userAppService, SendMailService sendMailService) {
         this.announcementService = announcementService;
         this.categoryService = categoryService;
+        this.userAppService = userAppService;
         this.sendMailService = sendMailService;
     }
 
@@ -120,7 +123,9 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
             Notification.show("Enter a category");
         } else {
             Category c = categoryService.findByName(category);
-            announcementService.saveAnnouncement(new Announcement(content, c, LOGGED_USER, AnnouncementStatus.review));
+            Announcement announcement = new Announcement(content, c, LOGGED_USER, AnnouncementStatus.review);
+            LOGGED_USER.addAnnouncement(announcement);
+            userAppService.saveUser(LOGGED_USER);
             Notification.show("Added announcement!");
             sendAddAnnouncementInformation();
             getLayoutAnnouncements();
