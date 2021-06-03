@@ -22,6 +22,7 @@ import java.util.List;
 @Builder
 @ToString
 public class User extends AbstractModel implements UserDetails {
+    @Column(unique = true, length = 30)
     private String username;
     private String password;
     @Enumerated(EnumType.STRING)

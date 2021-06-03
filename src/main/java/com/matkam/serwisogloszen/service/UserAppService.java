@@ -21,10 +21,12 @@ public class UserAppService {
         return userRepo.findById(id)
                 .orElseThrow(() -> new UserNotFountException("User with id " + id + " was not found"));
     }
+
     public User findUserByUsername(String name) {
         return userRepo.findUserByUsername(name)
                 .orElseThrow(() -> new UserNotFountException("User with name " + name + " was not found"));
     }
+
     public void saveUser(User user) {
         userRepo.save(user);
     }
@@ -36,4 +38,5 @@ public class UserAppService {
     public void deleteUserById(Long id) {
         userRepo.deleteById(id);
     }
+
 }
