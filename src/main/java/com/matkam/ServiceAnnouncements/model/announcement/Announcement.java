@@ -7,6 +7,7 @@ import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
+import java.util.Date;
 
 @Entity
 @AllArgsConstructor
@@ -22,4 +23,5 @@ public class Announcement extends AbstractModel {
     @OneToOne
     private User user;
     private AnnouncementStatus status;
+//    private Date finishDate;
 }

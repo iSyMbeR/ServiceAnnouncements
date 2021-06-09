@@ -20,7 +20,6 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +28,6 @@ import java.util.Set;
 
 import static com.matkam.ServiceAnnouncements.service.UserDetailsServiceImplementation.LOGGED_USER;
 
-@Slf4j
 @Route("announcements/:announcementId?")
 public class AnnouncementController extends VerticalLayout implements BeforeEnterObserver {
     private static final String HOST = "localhost";
@@ -129,12 +127,9 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
             Notification.show("Enter a category");
         } else {
             Category c = categoryService.findByName(category);
-            Announcement announcement = new Announcement(content, c, LOGGED_USER, AnnouncementStatus.review);
-            LOGGED_USER.addAnnouncement(announcement);
-            userAppService.saveUser(LOGGED_USER);
+            announcementService.saveAnnouncement(new Announcement(content, c, LOGGED_USER, AnnouncementStatus.review));
             Notification.show("Added announcement!");
             sendAddAnnouncementInformation();
-            LOGGER.info("Announcement sent");
             getLayoutAnnouncements();
         }
     }
@@ -156,6 +151,7 @@ public class AnnouncementController extends VerticalLayout implements BeforeEnte
     }
 
     private void sendAddAnnouncementInformation() {
+        Notification.show("Email has been sent!");
         LOGGER.info("Sending AddAnnouncementInformation to user " + LOGGED_USER.getUsername());
         String message = "Your advertisement has been sent to the administrator and is waiting for confirmation.";
         sendMailService.sendMail(LOGGED_USER.getEmail(), message, "Announcement!");
