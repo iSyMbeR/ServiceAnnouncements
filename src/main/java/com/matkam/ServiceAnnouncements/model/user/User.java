@@ -8,7 +8,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,12 +21,12 @@ import java.util.List;
 @Builder
 @ToString
 public class User extends AbstractModel implements UserDetails {
-    @Column(unique = true, length = 30)
+//    @Column(unique = true, length = 30)
     private String username;
     private String password;
     @Enumerated(EnumType.STRING)
     private UserRole role;
-    @Email
+//    @Email
     private String email;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -42,7 +41,6 @@ public class User extends AbstractModel implements UserDetails {
     public void addAnnouncement(Announcement announcement) {
         if (announcementList == null)
             announcementList = new ArrayList<>();
-
         announcementList.add(announcement);
     }
 

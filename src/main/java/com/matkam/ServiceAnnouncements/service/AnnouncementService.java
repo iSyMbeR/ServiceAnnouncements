@@ -35,7 +35,7 @@ public class AnnouncementService {
 
     public void deleteAnnouncement(Announcement announcement) {
         announcementRepo.delete(announcement);
-        LOGGER.info("Deleted announcement with id" + announcement.getId());
+        LOGGER.info("Deleted announcement with id " + announcement.getId());
     }
 
     public void deleteAnnouncementById(Long id) {
