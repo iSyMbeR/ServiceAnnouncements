@@ -43,13 +43,13 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     @EventListener(ApplicationReadyEvent.class)
     public void get() {
         User user = User.builder()
-                .username("ja")
+                .username("kamil")
                 .email("kamil.lobas@gmail.com")
-                .password(passwordEncoderConfig.passwordEncoder().encode("ja"))
+                .password(passwordEncoderConfig.passwordEncoder().encode("kamil"))
                 .role(UserRole.USER)
                 .build();
-        User admin = new User("ty", passwordEncoderConfig.passwordEncoder().encode("ty"), UserRole.ADMIN);
-        User moderator = new User("ona", passwordEncoderConfig.passwordEncoder().encode("ona"), UserRole.MODERATOR);
+        User admin = new User("admin", passwordEncoderConfig.passwordEncoder().encode("admin"), UserRole.ADMIN);
+        User moderator = new User("moderator", passwordEncoderConfig.passwordEncoder().encode("moderator"), UserRole.MODERATOR);
         if (userRepo.findUserByUsername(user.getUsername()).isEmpty() && userRepo.findUserByUsername(admin.getUsername()).isEmpty()) {
             userRepo.save(user);
             userRepo.save(admin);

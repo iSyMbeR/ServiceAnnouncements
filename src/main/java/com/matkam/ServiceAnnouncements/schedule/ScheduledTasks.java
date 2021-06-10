@@ -49,12 +49,9 @@ public class ScheduledTasks {
 
         if (!listOut.isEmpty()) {
             for (Announcement a : listOut) {
-                System.out.println("WESZLO TU przed ifem" );
-                System.out.println();
                 if (a.getFinishDate() == null) {
                     LocalDateTime actualDate = LocalDateTime.now();
                     LocalDateTime finishDate = actualDate.plusSeconds(30);
-                    System.out.println("WESZLO TU " + finishDate);
                     a.setFinishDate(finishDate);
                     announcementService.saveAnnouncement(a);
                 }
@@ -64,7 +61,6 @@ public class ScheduledTasks {
                     .collect(Collectors.toList());
 
             for (Announcement a : listToChangeStatus) {
-                System.out.println("Data wygasniecia: " + a.getFinishDate() + " I data terazniejsza" + LocalDateTime.now());
                 a.setStatus(AnnouncementStatus.outdated);
                 a.setFinishDate(null);
                 announcementService.saveAnnouncement(a);
