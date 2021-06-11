@@ -11,5 +11,4 @@ public class ServiceAnnouncementsApplication {
     public static void main(String[] args) {
         SpringApplication.run(ServiceAnnouncementsApplication.class, args);
     }
-
 }

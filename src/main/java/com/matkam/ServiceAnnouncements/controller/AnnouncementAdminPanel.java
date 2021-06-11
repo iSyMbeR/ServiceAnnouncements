@@ -38,7 +38,6 @@ public class AnnouncementAdminPanel extends VerticalLayout {
         this.getLayoutAnnouncements();
     }
 
-
     private void getLayoutAnnouncements() {
         LOGGER.info(LOGGED_USER.getUsername() + " Connected to " + HOST + "/announcements-admin");
         this.removeAll();

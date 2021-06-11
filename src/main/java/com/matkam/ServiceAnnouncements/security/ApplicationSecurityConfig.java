@@ -19,7 +19,6 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsServiceImplementation userDetailsServiceImplementation;
     private final UserRepo userRepo;
 
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsServiceImplementation);
